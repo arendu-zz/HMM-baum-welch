@@ -1,0 +1,2 @@
+#use: ./vtagem [traing_file] [test_file] [raw_file]
+python vtagem.py $1 $2 $3

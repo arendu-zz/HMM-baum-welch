@@ -1,0 +1,2 @@
+#use: ./vtag [train_file] [test_file]
+python vtag.py $1 $2

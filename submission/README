@@ -1,0 +1,266 @@
+Question 1:
+a)
+i) When the number of ice creams on the first day was changed to 1, the p(h) for the first day reduced
+from 0.87 to 0.491. The probability reduces because the new observation at day 1 favors a cold day. The model
+also sees that the following 2 days are 3 ice cream days, so they strongly favor hot days, and because the model
+does not favor changes in weather, the first day gets a (almost) 50% chance of hot.
+
+ii) Initially P(h) at day 2 was 0.977 after the first day ice cream number was set to 1, this probability dropped
+slightly to 0.918. K28 hols this probability.
+
+iii) Over the course of 10 iterations the change of number of ice creams from 2 to 1, makes a large change
+p(h) for days 1 and 2.
+When ice cream at day 1 = 1:
+At the end of the 10th iteration p(h) at day 1 is 0.0, p(h) at day 2 is little above 0.5.
+When ice cream at day 1 = 2:
+At the end of the 10th iteration p(h) at day 1 is 1.0 and for day 2 is also close to 1.
+
+b)
+i) When the strong bias 'never eat just 1 ice cream on a hot day' is applied, we see sudden drops in the p(h)
+for days that have 1 ice cream, even if they are surrounded by days with 2-3 ice creams. For ex. days 11-13
+had high p(h) even though day 11 was a 1 ice cream day, but once p(1|h) = 0.0 day 11's p(h) dropped to 0 and
+days 12-13 also dropped in their p(h) to around 0.5.
+
+ii) In the final re-construction (after 10 iterations) the model decided the highest probable sequence would be
+to set days 11 to 26 as cold days. This is because all of the 1 ice cream days are within those days, and
+since P(1|h) = 0 it forces all the 1 ice cream days to be cold. Now, given the high p(c) of those days it also
+makes the model coerce the other days between the 1 ice cream days to cold, because we still a high c->c probability.
+
+iii) P(1|h) remains 0 though all the iterations. It can never get updated. This means the alpha probability at the
+end state will not consider any path that includes a 'H' state emitting a observation '1'. Thus the counts of c(1,H)
+will remain 0 after 1 estimation, then P(1|H) will be 0 again and this process continues.
+
+
+c)
+i) The alpha probability of the start state represents the total probability of the sentence. This is because the
+start states alpha probability is the sum of all possible "parse trees" that can lead to the start state.
+
+ii) The H constituient in the CFG would represent the inside probability of the span of observations.
+H -> 1 C represents the combination of 2 probabilities. Its the product of the P(1|H) i.e. the probability of 'H'
+emitting the observation '1' and P(H->C) i.e. probability of 'C being followed by 'H'.
+
+Question 4:
+The Viterbi tagger was implmented with one count smoothing. Here are the results of the tagger on each data set.
+
+-ictrain,ictest
+Tagging accuracy (Viterbi decoding): 87.88%	(known: 87.88%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 3.620
+
+-ic2train,ic2test
+Tagging accuracy (Viterbi decoding): 90.91%	(known: 90.32%	novel: 100.00%)
+Perplexity per Viterbi-tagged test word: 8.152
+
+-entrain,entest
+Tagging accuracy (Viterbi decoding): 94.15%	(known: 96.86%	novel: 66.08%)
+Perplexity per Viterbi-tagged test word: 973.271
+
+-entrain25K,entest
+Tagging accuracy (Viterbi decoding): 91.09%	(known: 96.51%	novel: 64.22%)
+Perplexity per Viterbi-tagged test word: 1073.826
+
+-entrain4K,entest
+Tagging accuracy (Viterbi decoding): 83.29%	(known: 96.57%	novel: 59.26%)
+Perplexity per Viterbi-tagged test word: 1078.848
+
+As we can see when we compare the entrain-entest numbers with the baseline model, this performs a lot better.
+The baseline was at:
+Tagging accuracy (Viterbi decoding): 92.48% (known: 95.99% novel: 56.07%)
+Perplexity per Viterbi-tagged test word: 1577.499
+
+The accuracy improvement was modest from 92.48 to 94.15%. The biggest improvement was in novel words (ignore the seen
+words) from 56.07 to 66.08%. The biggest improvement was in the per word perplexity from 1577.499 to 973.27.
+
+Question 6:
+The EM algorithm was implemented and here is the output of the first 3 iterations on the entrain25K, entest and
+enraw data.
+
+* * * ITERATION 0 * * *
+Tagging accuracy (Viterbi decoding): 91.09%	(known: 96.52%	seen: 62.91%	novel: 65.65%)
+Perplexity per Viterbi-tagged test word: 1123.558
+Perplexity per untagged raw word: 1322.8603
+
+* * * ITERATION 1 * * *
+Tagging accuracy (Viterbi decoding): 91.65%	(known: 96.50%	seen: 69.64%	novel: 65.44%)
+Perplexity per Viterbi-tagged test word: 920.515
+Perplexity per untagged raw word: 720.6861
+
+* * * ITERATION 2 * * *
+Tagging accuracy (Viterbi decoding): 91.37%	(known: 96.37%	seen: 68.07%	novel: 65.02%)
+Perplexity per Viterbi-tagged test word: 907.694
+Perplexity per untagged raw word: 690.4257
+
+* * * ITERATION 3 * * *
+Tagging accuracy (Viterbi decoding): 90.82%	(known: 96.27%	seen: 64.92%	novel: 62.64%)
+Perplexity per Viterbi-tagged test word: 902.813
+Perplexity per untagged raw word: 668.8321
+
+The tagging accuracy continued to drop from this point on.
+
+This is the output of the first 3 iterations on the entrain4k, entest and enraw.
+
+* * * ITERATION 0 * * *
+Tagging accuracy (Viterbi decoding): 83.30%	(known: 96.57%	seen: 57.49%	novel: 64.56%)
+Perplexity per Viterbi-tagged test word: 1610.933
+Perplexity per untagged raw word: 1707.1269
+
+* * * ITERATION 1 * * *
+Tagging accuracy (Viterbi decoding): 85.14%	(known: 96.67%	seen: 64.42%	novel: 63.81%)
+Perplexity per Viterbi-tagged test word: 1080.317
+Perplexity per untagged raw word: 720.2377
+
+* * * ITERATION 2 * * *
+Tagging accuracy (Viterbi decoding): 84.49%	(known: 96.67%	seen: 63.72%	novel: 58.54%)
+Perplexity per Viterbi-tagged test word: 1015.071
+Perplexity per untagged raw word: 664.7928
+
+* * * ITERATION 3 * * *
+Tagging accuracy (Viterbi decoding): 84.05%	(known: 96.64%	seen: 62.43%	novel: 57.69%)
+Perplexity per Viterbi-tagged test word: 980.988
+Perplexity per untagged raw word: 627.4557
+
+Again we see that the the tagging accuracy was best just after 1 iteration, after which the tagging accuracy
+went steadily down.
+
+To make sure the EM updated were happening correctly, I tested against the spreadsheet data.
+This is the full 10 iterations of the ictrain,ictest,icraw data.
+
+* * * ITERATION 0 * * *
+Tagging accuracy (Viterbi decoding): 87.88%	(known: 87.88%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 3.620
+Perplexity per untagged raw word: 3.3930
+
+* * * ITERATION 1 * * *
+Tagging accuracy (Viterbi decoding): 90.91%	(known: 90.91%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 3.098
+Perplexity per untagged raw word: 2.9466
+
+* * * ITERATION 2 * * *
+Tagging accuracy (Viterbi decoding): 100.00%	(known: 100.00%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 3.021
+Perplexity per untagged raw word: 2.8794
+
+* * * ITERATION 3 * * *
+Tagging accuracy (Viterbi decoding): 100.00%	(known: 100.00%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 2.966
+Perplexity per untagged raw word: 2.8535
+
+* * * ITERATION 4 * * *
+Tagging accuracy (Viterbi decoding): 100.00%	(known: 100.00%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 2.942
+Perplexity per untagged raw word: 2.8400
+
+* * * ITERATION 5 * * *
+Tagging accuracy (Viterbi decoding): 100.00%	(known: 100.00%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 2.930
+Perplexity per untagged raw word: 2.8331
+
+* * * ITERATION 6 * * *
+Tagging accuracy (Viterbi decoding): 100.00%	(known: 100.00%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 2.925
+Perplexity per untagged raw word: 2.8297
+
+* * * ITERATION 7 * * *
+Tagging accuracy (Viterbi decoding): 100.00%	(known: 100.00%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 2.923
+Perplexity per untagged raw word: 2.8282
+
+* * * ITERATION 8 * * *
+Tagging accuracy (Viterbi decoding): 100.00%	(known: 100.00%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 2.922
+Perplexity per untagged raw word: 2.8275
+
+* * * ITERATION 9 * * *
+Tagging accuracy (Viterbi decoding): 100.00%	(known: 100.00%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 2.922
+Perplexity per untagged raw word: 2.8272
+
+* * * ITERATION 10 * * *
+Tagging accuracy (Viterbi decoding): 100.00%	(known: 100.00%	seen: 0.00%	novel: 0.00%)
+Perplexity per Viterbi-tagged test word: 2.922
+Perplexity per untagged raw word: 2.8271
+
+Questions:
+a) alpha_###(0) is 1 because the sum-probability of all paths entering the start state is 1. Alpha holds the
+sum of forward path probabilities entering a state. Since all paths for a given sequence of observations must start
+at the start state (### at 0) the forward probability at this state is 1.
+
+Similarly the backward probability of all paths at beta_###(n) is also 1. This is like the opposite of the alpha_###(0) case.
+Beta probability is the sum of each path probability  from the current state, that go all the way to the end state. Thus
+if the current state is the end state, it has already 'reached' the end state therefore the sum of path probabilities to
+reach the end state has to be 1.
+
+b) The viterbi-tagged test perplexity is calculated from the max probability path through the model. The untagged raw word
+perplexity is calculated using the final state's forward probability, which is the sum of all path probabilities. The viterbi
+probability is only one among the many paths that constitute the sum, therefore the max will be lower than the sum of all
+possible path probabilities. Thus, the viterbi-tagged perplexity will be higher that the untagged raw word perplexity.
+
+The perplexity of the untagged raw word is more important because in the real word, we do not get to run our re-estimated
+model on a test set with every iteration.
+
+c) V does not include vocabulary form the test set because we are trying to evaluate against the test set. If we include
+test set vocabulary we are essentially not accounting for the possibility of seeing OOV types, and we do not need to do
+any smoothing.
+
+d) The EM re-esitimation initially helped in both the 4K and 25K set the tagging accuracy improved modestly
+(more improvement in 4k) but after the first 2 iterations the tagging accuracy started to drop. The biggest improvement
+by EM was noticed in the 'Seen' vocabulary. In both 25K and 4K training sets, the biggest improvement was seen in seen
+types, the jump in accuracy was from 62 to 69% and 57 to 64% respectively. In the other word types there was not that
+much of improvement.
+
+e) The EM estimation helped the most with seen word types. This is because we used the forward-backward algorithm to pick the best
+Tag | Raw_word. We did this assignment using forward backword, because it would probability of the best tag for the word rather
+than maximize the best sequence of tags for the entire raw set. This way we get the best possible counts for our emission statistics
+i.e. (raw words). As these counts were wrapped up in the next iteration by the viterbi tagger, the next iteration gave good improvement
+for the words seen in raw.
+
+(f)
+EM did not help much with completely novel words. This is because the viterbi algorithm had the chance to apply any of the possible
+tags to a novel word, and since all tags are equally likely, the viterbi algorithm simply chose the tag to improve the max probability
+of the sequence.  Thus, no real information was used from the OOV word.
+
+The EM re-estimation could also have been improved if more context was used, especially for novel words. Instead of looking
+only at the previous tag (bigram) we could look at previous 2 tags (trigram). So not having enough context could have been
+one of the reasons why EM did not always help.
+
+(g) never had more than 1 ice cream on a day :(
+
+
+Question 7:
+
+I implemented viterbi beam search to speed up the viterbi algorithm. The same beam search can  be applied to the
+forward-backward as well, but I just implemented it for viterbi.
+
+Here are my speed up results:
+
+Beam Width	|	entrain25K-entest	|   time taken
+23			|	94.15%,973.271		|	2.55 seconds
+5			|	94.15%,973.290		|	2.03 seconds
+2			|	94.13%,977.253		|	1.98 seconds
+1			|	93.64%,1007.013		|	1.87 seconds
+
+Beam Width	|	cztrain-cztest		| time taken
+66			|	47.43%,24863.423	| 2min 36sec
+30			|	47.43%,24864.076    | 1min 20sec
+10			|	47.42%,24999.055	| 37sec
+3			|	47.44%,26396.958	| 22sec
+
+Question (a),(b),(c)
+In this task pruning does not seem to affect accuracy very much. This makes sense because there is only 1 clear winner
+tag for a word, and very rarely is there a "close" second place tag. Thus even really aggressive pruning does not
+hurt accuracy a lot. In the CZ case having a beam width of 3 (which is less than 5% of the original width) actually
+improves the accuracy slightly!
+
+The same beam pruning could have been used for EM , but unfortunately the way I implemented the backward computations
+make beam pruning little more time taking, so I just stopped with the viterbi beam search.
+
+To run the sped up version, type:
+./vtag_speed [train_file] [test_file] [beam_width]
+
+Question (d)
+If we have information specific to a language, we can prune possible states even for novel words. For example, if we have
+never seen a token but know that its suffix is 'ing' we might concluded that its more likely for this token to be a verb
+than say a conjunction. Using the prefix or suffix would be a good way to prune.
+
+
+
+

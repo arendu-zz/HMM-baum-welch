@@ -1,0 +1,2 @@
+#use: ./vtag [train_file] [test_file] [beam_width]
+python vtag_speed.py $1 $2 $3
