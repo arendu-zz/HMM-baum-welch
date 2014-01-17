@@ -101,7 +101,7 @@ def get_one_count_emission(obs, v):
             if count_v == 0:
                 pdb.set_trace()
             ocp = (count_obs_v + one_count_lambda * p_w_addone) / float(count_v + one_count_lambda)
-            print 'OCE:', ocp, V, p_w_addone, count_v, count_obs_v, obs, v
+            #print 'OCE:', ocp, V, p_w_addone, count_v, count_obs_v, obs, v
             #pdb.set_trace()
         if ocp == 0 and v != BOUNDRY_STATE and obs != BOUNDRY_WORD:
             pdb.set_trace()
@@ -179,8 +179,8 @@ def make_mle_estimates(filepath):
             k_prob = ('transition_prob', state, prev_state )
             temp_MLE[k_prob] = log(CURRENT_MLEs[k] / float(CURRENT_MLEs[k_any]))
     CURRENT_MLEs = dict(CURRENT_MLEs.items() + temp_MLE.items())
-    print CURRENT_MLEs[N1]
-    pdb.set_trace()
+    #print CURRENT_MLEs[N1]
+    #pdb.set_trace()
 
 
 def get_backwards(words, alpha_pi):
@@ -205,10 +205,9 @@ def get_backwards(words, alpha_pi):
             beta_pi[new_pi_key] = logadd_of_list(sum_prob_to_bt)
             posterior_unigrams[new_pi_key] = beta_pi[new_pi_key] + alpha_pi[new_pi_key] - S
             #beta_pi[new_pi_key] = sum(sum_prob_to_bt)
-            print 'beta     ', new_pi_key, '=', beta_pi[new_pi_key], exp(beta_pi[new_pi_key])
-            print 'posterior', new_pi_key, '=', posterior_unigrams[new_pi_key], exp(posterior_unigrams[new_pi_key])
+            #print 'beta     ', new_pi_key, '=', beta_pi[new_pi_key], exp(beta_pi[new_pi_key])
+            #print 'posterior', new_pi_key, '=', posterior_unigrams[new_pi_key], exp(posterior_unigrams[new_pi_key])
             #print 'beta', new_pi_key, '=', beta_pi[new_pi_key]
-    pdb.set_trace()
     return beta_pi, posterior_unigrams
 
 
@@ -239,13 +238,13 @@ def get_viterbi_sequence(words):
             new_pi_key = (k, v)
             pi[new_pi_key] = max(max_prob_to_bt)
             #print 'mu   ', new_pi_key, '=', pi[new_pi_key]
-            print 'mu   ', new_pi_key, '=', pi[new_pi_key], exp(pi[new_pi_key])
+            #print 'mu   ', new_pi_key, '=', pi[new_pi_key], exp(pi[new_pi_key])
             #alpha_pi[new_pi_key] = sum(sum_prob_to_bt)
             #alpha_pi[new_pi_key] = log(sum(sum_prob_to_bt))  # sum the real probabilities, then take the log of the sum
             alpha_pi[new_pi_key] = logadd_of_list(sum_prob_to_bt)
 
             ##print 'alpha', new_pi_key, '=', alpha_pi[new_pi_key]
-            print 'alpha', new_pi_key, '=', alpha_pi[new_pi_key], exp(alpha_pi[new_pi_key])
+            #print 'alpha', new_pi_key, '=', alpha_pi[new_pi_key], exp(alpha_pi[new_pi_key])
             arg_pi[new_pi_key] = max_bt
 
     max_bt = max_prob_to_bt[max(max_prob_to_bt)]
@@ -292,8 +291,8 @@ if __name__ == "__main__":
         train_file = argv[1]
         test_file = argv[2]
     except:
-        train_file = '../data/ic2train'
-        test_file = '../data/ictest2'
+        train_file = '../data/ictrain'
+        test_file = '../data/ictest'
 
     make_mle_estimates(train_file)
     answer_tags, test_obs = read_test_sentences(test_file)
@@ -324,9 +323,9 @@ if __name__ == "__main__":
 
     #print len(predicted_tags), CURRENT_MLEs[N1]
     all_perpexity = (exp(-max_p / float(len(predicted_tags) + num_sentences)))
-    print 'calc:', max_p, len(predicted_tags), num_sentences
+    #print 'calc:', max_p, len(predicted_tags), num_sentences
     tagging_accuracy = "%.2f" % (100 * float(correct_tags) / float(total_tags))
-    perplexity_per_word = "%.10f" % (all_perpexity)
+    perplexity_per_word = "%.3f" % (all_perpexity)
     stderr.write(str('Tagging accuracy (Viterbi decoding): ' + str(tagging_accuracy) + '%\t'))
     stderr.write(str('(known: ' + str("%.2f" % known_accuracy) + '%\t'))
     stderr.write(str('novel: ' + str("%.2f" % unknown_accuracy) + '%)\n'))

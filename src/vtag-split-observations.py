@@ -64,7 +64,7 @@ def make_mle_estimates(filepath):
         prev_state = START_STATE
         if tagged_sentence.strip() != '':
             for state_obs in tagged_sentence.strip().split(linesep):
-                n += 1 # todo: this n does not count end-state or start-state, should it???
+                n += 1  # todo: this n does not count end-state or start-state, should it???
                 obs = state_obs.split('/')[0]
                 state = state_obs.split('/')[1]
                 CURRENT_MLEs[OBS_VOCAB].update([obs])  # has a set of all seen observations [TYPES]
@@ -100,10 +100,7 @@ def make_mle_estimates(filepath):
             try_and_increment_MLE(('emission', END_WORD, END_STATE), 1.0)
             s += 1
 
-    #CURRENT_MLEs[OBS_VOCAB].update([END_WORD + START_WORD])
-    #CURRENT_MLEs[STATES_VOCAB].update([END_STATE + START_STATE])
     CURRENT_MLEs['N+S'] = float(n + s)
-    #possible_states[OOV] = CURRENT_MLEs[STATES_VOCAB]
     temp_MLE = defaultdict()
     for k in CURRENT_MLEs:  # convert to probabilities
         #print k, counts[k]
@@ -120,20 +117,7 @@ def make_mle_estimates(filepath):
             k_prob = ('transition_prob', state, prev_state )
             temp_MLE[k_prob] = log(CURRENT_MLEs[k] / float(CURRENT_MLEs[k_any]))
     CURRENT_MLEs = dict(CURRENT_MLEs.items() + temp_MLE.items())
-    """
-    for tag in CURRENT_MLEs[STATES_VOCAB]:
-        print 'count of states', tag, CURRENT_MLEs[('any_transition_from', tag)], CURRENT_MLEs[('any_emission_from', tag)]
-        backoff_for_state = CURRENT_MLEs[('any_transition_from', tag)] / float(n + s)
-        #CURRENT_MLEs[('backoff_transition', tag)] = backoff_for_state
-
-    for word in CURRENT_MLEs[OBS_VOCAB]:
-        if word == '**OOV**':
-            pass
-        backoff_for_observation = (CURRENT_MLEs[('observation_token_counts', word)] + 1) / float(
-            n + s + len(CURRENT_MLEs[OBS_VOCAB]))
-        CURRENT_MLEs[('backoff_emission', word)] = backoff_for_observation
-        """
-    print CURRENT_MLEs['N+S']
+    #print CURRENT_MLEs['N+S']
     stderr.write('completed counting...\n')
 
 
@@ -174,7 +158,7 @@ def get_one_count_emission(obs, v):
             if count_v == 0:
                 pdb.set_trace()
             ocp = (count_obs_v + one_count_lambda * p_w_addone) / float(count_v + one_count_lambda)
-            print 'OCE:', ocp, V, p_w_addone, count_v, count_obs_v, obs, v
+            #print 'OCE:', ocp, V, p_w_addone, count_v, count_obs_v, obs, v
             #pdb.set_trace()
         if ocp == 0 and v != BOUNDRY_STATE and obs != BOUNDRY_WORD:
             pdb.set_trace()
@@ -182,48 +166,6 @@ def get_one_count_emission(obs, v):
         one_count_emission[('ocp_emission', obs, v)] = log(ocp) if ocp > 0.0 else float('-inf')
 
     return one_count_emission[('ocp_emission', obs, v)]
-
-
-'''
-def one_count_probabilty(type, *args):
-    if type == 'transition':
-        v = args[0]
-        u = args[1]
-        #print 'getting one count for transition', v, u
-        if ('ocp_transition', v, u) not in CURRENT_MLEs:
-            one_count_lambda = len(singleton_transitions[u]) + add_to_lambda
-            backoff_transition_prob = CURRENT_MLEs[('backoff_transition', v)]
-            count_uv = CURRENT_MLEs[('transition', v, u)]
-            count_u = CURRENT_MLEs[('any_transition_from', u)]
-            ocp = (count_uv + one_count_lambda * backoff_transition_prob) / float(count_u + one_count_lambda)
-            if ocp == 0:
-                pdb.set_trace()
-                raise "One Count Smoothed Probability is 0!!"
-            CURRENT_MLEs[('ocp_transition', v, u)] = log(ocp)
-        return CURRENT_MLEs[('ocp_transition', v, u)]
-    elif type == 'emission':
-        obs = args[0]
-        if obs is END_WORD:
-            return 0.0
-        v = args[1]
-        #print 'getting one count for emission', obs, v
-        if ('ocp_emission', obs, v) not in CURRENT_MLEs:
-            one_count_lambda = len(singleton_emissions[v]) + add_to_lambda
-            if obs not in CURRENT_MLEs[OBS_VOCAB]:
-                backoff_emission_prob = CURRENT_MLEs[('backoff_emission', '**OOV**')]
-            else:
-                backoff_emission_prob = CURRENT_MLEs[('backoff_emission', obs)]
-            count_obs_v = CURRENT_MLEs[('emission', obs, v)]
-            count_v = CURRENT_MLEs[('any_emission_from', v)]
-            ocp = (count_obs_v + one_count_lambda * backoff_emission_prob) / float(count_v + one_count_lambda)
-            if ocp == 0:
-                pdb.set_trace()
-                raise "One Count Smoothed Probability is 0!!"
-            CURRENT_MLEs[('ocp_emission', obs, v)] = log(ocp)
-        return CURRENT_MLEs[('ocp_emission', obs, v)]
-    else:
-        raise "Invalid type of one count probability requested"
-'''
 
 
 def get_backwards(words, alpha_pi):
@@ -242,8 +184,8 @@ def get_backwards(words, alpha_pi):
             new_pi_key = (k, v)
             beta_pi[new_pi_key] = log(sum(sum_prob_to_bt))
             posterior_unigrams[new_pi_key] = beta_pi[new_pi_key] + alpha_pi[new_pi_key] - S
-            print 'beta     ', new_pi_key, '=', beta_pi[new_pi_key], exp(beta_pi[new_pi_key])
-            print 'posterior', new_pi_key, '=', posterior_unigrams[new_pi_key], exp(posterior_unigrams[new_pi_key])
+            #print 'beta     ', new_pi_key, '=', beta_pi[new_pi_key], exp(beta_pi[new_pi_key])
+            #print 'posterior', new_pi_key, '=', posterior_unigrams[new_pi_key], exp(posterior_unigrams[new_pi_key])
 
     return beta_pi, posterior_unigrams
 
@@ -272,21 +214,10 @@ def get_viterbi_sequence(words):
             max_bt = max_prob_to_bt[max(max_prob_to_bt)]
             new_pi_key = (k, v)
             pi[new_pi_key] = max(max_prob_to_bt)
-            print 'mu   ', new_pi_key, '=', exp(pi[new_pi_key])
+            #print 'mu   ', new_pi_key, '=', exp(pi[new_pi_key])
             alpha_pi[new_pi_key] = log(sum(sum_prob_to_bt))  # sum the real probabilities, then take the log of the sum
-            print 'alpha', new_pi_key, '=', exp(alpha_pi[new_pi_key])
+            #print 'alpha', new_pi_key, '=', exp(alpha_pi[new_pi_key])
             arg_pi[new_pi_key] = max_bt
-    '''
-    pdb.set_trace()
-    k = max(words)
-    max_prob_to_bt = {}
-    for u in possible_states[words[k]]:
-        q = get_one_count_transition(END_STATE, u) # one_count_probabilty('transition', END_STATE, u)
-        p = pi[(k, u)] + q
-        bt = list(arg_pi[(k, u)])
-        bt.append(u)
-        max_prob_to_bt[p] = bt
-    '''
     max_bt = max_prob_to_bt[max(max_prob_to_bt)]
     max_p = max(max_prob_to_bt)
     max_bt.pop(0)
@@ -340,15 +271,15 @@ if __name__ == "__main__":
         train_file = argv[1]
         test_file = argv[2]
     except:
-        train_file = '../data/ic2train'
-        test_file = '../data/ictest2'
+        train_file = '../data/ictrain'
+        test_file = '../data/ictest'
     try:
         add_to_lambda = float(argv[3])
     except:
         add_to_lambda = 1e-20
 
     make_mle_estimates(train_file)
-    pprint(CURRENT_MLEs)
+    #pprint(CURRENT_MLEs)
     test_sentences, test_tags = read_test_sentences(test_file)
     correct_tags = [0, 0]  # first for viterbi decoding, second for posterior decoding
     correct_known_tags = [0, 0]  # first for viterbi decoding, second for posterior decoding
@@ -359,7 +290,6 @@ if __name__ == "__main__":
     sum_best_mu = 0.0
     for i in range(len(test_sentences)):
         sent = test_sentences[i]
-        print sent
         answer_tags = test_tags[i]
         obs, known = get_observations_with_indexes(sent)
         predicted_tags, best_mu, alpha_pi = get_viterbi_sequence(obs)
@@ -413,8 +343,8 @@ if __name__ == "__main__":
     tagging_accuracy[0] = "%.2f" % (100 * float(correct_tags[0]) / float(total_tags))
     tagging_accuracy[1] = "%.2f" % (100 * float(correct_tags[1]) / float(total_tags))
     all_perpexity = (exp(-sum_best_mu / float(total_n + len(test_sentences))))
-    perplexity_per_word = "%.10f" % (all_perpexity)
-    print 'calc:', sum_best_mu, total_n, len(test_sentences)
+    perplexity_per_word = "%.3f" % (all_perpexity)
+    #print 'calc:', sum_best_mu, total_n, len(test_sentences)
     stderr.write(str('Tagging accuracy (Viterbi decoding): ' + str(tagging_accuracy[0]) + '%\t'))
     stderr.write(str('(known: ' + str("%.2f" % known_accuracy[0]) + '%\t'))
     stderr.write(str('novel: ' + str("%.2f" % unknown_accuracy[0]) + '%)\n'))
