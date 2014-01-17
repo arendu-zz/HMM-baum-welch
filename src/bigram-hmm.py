@@ -135,9 +135,9 @@ def read_test_sentences(filepath):
     return test_sentences, test_tags
 
 
-make_mle_estimates('../data/entrain')
+make_mle_estimates('../data/ictrain')
 pprint(CURRENT_MLEs)
-test_sentences, test_tags = read_test_sentences('../data/entest')
+test_sentences, test_tags = read_test_sentences('../data/ictest')
 all_predictions = [START_STATE]
 all_answer_tags = [START_STATE]
 all_perpexity = []

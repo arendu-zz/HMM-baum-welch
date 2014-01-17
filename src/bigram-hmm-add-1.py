@@ -167,7 +167,7 @@ if __name__ == "__main__":
         test_file = argv[2]
     except:
         train_file = '../data/ictrain'
-        test_file = '../data/ictest2'
+        test_file = '../data/ictest'
 
     try:
         add_lambda = float(argv[3])

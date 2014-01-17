@@ -208,8 +208,8 @@ if __name__ == "__main__":
         train_file = argv[1]
         test_file = argv[2]
     except:
-        train_file = '../data/ic2train'
-        test_file = '../data/ic2test'
+        train_file = '../data/ictrain'
+        test_file = '../data/ictest2'
     try:
         add_to_lambda = float(argv[3])
     except:
