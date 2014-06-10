@@ -15,9 +15,9 @@ def logadd(x, y):
         return y + log(1 + exp(x - y))
 
 def logadd_of_list(a_list):
-    logsum = a_list[0]
-    for i in a_list[1:]:
-        logsum += logadd(logsum,i)
-    return logsum
-
+    ans = float('-inf')
+    while len(a_list) > 0:
+        p = a_list.pop()
+        ans = logadd(ans, p)
+    return ans
 
